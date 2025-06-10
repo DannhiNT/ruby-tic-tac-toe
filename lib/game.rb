@@ -6,8 +6,9 @@ require_relative 'board'
 # The Game Class controls the flow for Tic-tac-toe game.
 # It handles game logic, players' turn, and checks for winning condition
 class Game
-  def initialize(name1, marker1, name2, marker2)
-    @board = Board.new
+  def initialize(size, name1, marker1, name2, marker2)
+    @size = size
+    @board = Board.new(size)
     @player1 = Player.new(name1, marker1)
     @player2 = Player.new(name2, marker2)
     @current_player = @player1
@@ -18,13 +19,26 @@ class Game
   end
 
   def won?(player)
-    combinations = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
-    ]
+    combinations = []
+
+    (0...@size).each do |row|
+      arr = Array.new(@size) { |i| @board.cell_at(row * @size + i) }
+      combinations << arr
+    end
+
+    (0...@size).each do |col|
+      arr = Array.new(@size) { |i| @board.cell_at(i * @size + col) }
+      combinations << arr
+    end
+
+    diagonal_arr1 = Array.new(@size) { |i| @board.cell_at(i * @size + i) }
+    combinations << diagonal_arr1
+
+    diagonal_arr2 = Array.new(@size) { |i| @board.cell_at(i * @size + (@size - i - 1)) }
+    combinations << diagonal_arr2
+
     combinations.each do |combo|
-      return true if combo.all? { |move| @board.cell_at(move) == player.marker }
+      return true if combo.all? { |move| move == player.marker }
     end
     false
   end
@@ -35,7 +49,7 @@ class Game
 
   def make_move
     loop do
-      puts "#{@current_player.name} (#{@current_player.marker}), enter a position (0-8): "
+      puts "#{@current_player.name} (#{@current_player.marker}), enter a position (0-#{@size * @size}): "
       position = gets.chomp.to_i
       return position if @board.valid_move?(position)
 

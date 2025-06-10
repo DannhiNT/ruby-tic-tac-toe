@@ -4,22 +4,26 @@
 # It manages the game grid and displays the board,
 # check if the board is full, or update the board with player marker
 class Board
-  def initialize
-    @grid = %w[0 1 2 3 4 5 6 7 8]
+  def initialize(size)
+    @size = size
+    @grid = Array.new(size * size) { |i| i.to_s }
   end
 
   def display
-    puts ''
-    puts "#{@grid[0]}  | #{@grid[1]} | #{@grid[2]}"
-    puts '---+---+---'
-    puts "#{@grid[3]}  | #{@grid[4]} | #{@grid[5]}"
-    puts '---+---+---'
-    puts "#{@grid[6]}  | #{@grid[7]} | #{@grid[8]}"
-    puts ''
+    @grid.each_with_index do |val, i|
+      print val.rjust(2)
+      if (i + 1) % @size == 0
+        puts
+        print '---+'
+        puts '----+' * (@size - 2) + '----'
+      else
+        print print ' | '
+      end
+    end
   end
 
   def valid_move?(position)
-    position.between?(0, 9) && @grid[position] != 'X' && @grid[position] != 'O'
+    position.between?(0, @size * @size - 1) && @grid[position] != 'X' && @grid[position] != 'O'
   end
 
   def update(position, marker)

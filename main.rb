@@ -6,6 +6,8 @@ require_relative 'lib/game'
 
 def set_up
   puts "Welcome to Tic-Tac-Toe. Enter 2 players' name and markers to get started"
+  print 'Please choose the size of the board: '
+  size = gets.chomp.to_i
   print "Player 1's name: "
   name1 = gets.chomp
   print "Player 1's marker (X or O): "
@@ -15,8 +17,8 @@ def set_up
   name2 = gets.chomp
   marker2 = marker1 == 'X' ? 'O' : 'X'
   puts "Player 2: #{name2}, marker: #{marker2}"
-  [name1, marker1, name2, marker2]
+  [size, name1, marker1, name2, marker2]
 end
-name1, marker1, name2, marker2 = set_up
-tic_tac_toe = Game.new(name1, marker1, name2, marker2)
+size, name1, marker1, name2, marker2 = set_up
+tic_tac_toe = Game.new(size, name1, marker1, name2, marker2)
 tic_tac_toe.play
